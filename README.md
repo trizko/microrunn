@@ -5,7 +5,7 @@ Rust port of Andrej Karpathy's [micrograd](https://github.com/karpathy/micrograd
 ```bash
 cd microrunn/
 cargo build
-./target/debug/microrun
+./target/debug/microrunn
 ```
 
 ### Example usage
