@@ -2,6 +2,8 @@ use std::cell::RefCell;
 use std::fmt::Debug;
 use std::ops::Add;
 use std::ops::Mul;
+use std::ops::Neg;
+use std::ops::Sub;
 use std::rc::Rc;
 
 pub struct Value {
@@ -15,6 +17,7 @@ pub struct Value {
 enum Op {
     Add,
     Mul,
+    Powf(f64),
     Tanh,
     None,
 }
@@ -35,6 +38,21 @@ impl Value {
         let left = Rc::new(RefCell::new(self.clone()));
         let _prev: Vec<Rc<RefCell<Value>>> = vec![left];
         let _op: Op = Op::Tanh;
+
+        Value {
+            data,
+            grad,
+            _prev,
+            _op,
+        }
+    }
+
+    pub fn powf(self, n: f64) -> Value {
+        let data: f64 = self.data.powf(n);
+        let grad: f64 = 0.0;
+        let left = Rc::new(RefCell::new(self.clone()));
+        let _prev: Vec<Rc<RefCell<Value>>> = vec![left];
+        let _op: Op = Op::Powf(n);
 
         Value {
             data,
@@ -111,6 +129,18 @@ impl Value {
                         _op: right._op,
                     })),
                 ]
+            }
+            Op::Powf(n) => {
+                let left = &*self._prev[0].borrow();
+
+                let left_grad = (n * left.data.powf(n - 1.0)) * self.grad;
+
+                vec![Rc::new(RefCell::new(Value {
+                    data: left.data,
+                    grad: left_grad,
+                    _prev: left._prev.clone(),
+                    _op: left._op,
+                }))]
             }
             Op::Tanh => {
                 let left = &*self._prev[0].borrow();
@@ -218,6 +248,22 @@ impl Mul for &Value {
     }
 }
 
+impl Sub for Value {
+    type Output = Value;
+
+    fn sub(self, other: Self) -> Self::Output {
+        self + -other
+    }
+}
+
+impl Neg for Value {
+    type Output = Self;
+
+    fn neg(self) -> Self::Output {
+        self * Value::new(-1.0)
+    }
+}
+
 impl Clone for Value {
     fn clone(&self) -> Value {
         Value {
@@ -234,8 +280,6 @@ impl Debug for Value {
         f.debug_struct("Value")
             .field("data", &self.data)
             .field("grad", &self.grad)
-            .field("_op", &self._op)
-            .field("_prev", &self._prev)
             .finish()
     }
 }
