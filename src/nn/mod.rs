@@ -1,6 +1,7 @@
 use crate::engine::Value;
 use rand::distributions::{Distribution, Uniform};
-use rand::thread_rng;
+use rand::rngs::StdRng;
+use rand::SeedableRng;
 
 trait Module {
     fn zero_grad(&self) -> Value;
@@ -16,7 +17,8 @@ struct Neuron {
 
 impl Neuron {
     fn new(nin: usize, non_lin: bool) -> Neuron {
-        let mut rng = thread_rng();
+        let seed = 42; // Choose a seed value
+        let mut rng = StdRng::seed_from_u64(seed);
         let generator = Uniform::from(0.01..=1.00);
 
         Neuron {
@@ -98,8 +100,9 @@ mod tests {
     }
     #[test]
     fn create_output_from_neuron() {
-        let mut rng = thread_rng();
-        let generator = Uniform::from(0.01..1.00);
+        let seed = 42; // Choose a seed value
+        let mut rng = StdRng::seed_from_u64(seed);
+        let generator = Uniform::from(0.01..=1.00);
         let x: Vec<Value> = vec![Value::new(generator.sample(&mut rng)); 3];
 
         let n = Neuron::new(3, true);
@@ -110,8 +113,9 @@ mod tests {
     }
     #[test]
     fn create_output_from_layer() {
-        let mut rng = thread_rng();
-        let generator = Uniform::from(0.01..1.00);
+        let seed = 42; // Choose a seed value
+        let mut rng = StdRng::seed_from_u64(seed);
+        let generator = Uniform::from(0.01..=1.00);
         let l = Layer::new(3, 3, true);
         let x: Vec<Value> = vec![Value::new(generator.sample(&mut rng)); 3];
         let out = l.call(&x);
@@ -120,8 +124,9 @@ mod tests {
     }
     #[test]
     fn create_output_from_mlp() {
-        let mut rng = thread_rng();
-        let generator = Uniform::from(-1.00..=1.00);
+        let seed = 42; // Choose a seed value
+        let mut rng = StdRng::seed_from_u64(seed);
+        let generator = Uniform::from(0.01..=1.00);
         let x: Vec<Value> = vec![Value::new(generator.sample(&mut rng)); 3];
 
         let m = MLP::new(2, vec![3, 3, 1]);
