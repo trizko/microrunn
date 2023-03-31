@@ -86,6 +86,22 @@ impl MLP {
 
         out
     }
+
+    pub fn loss(&self, xs: Vec<Vec<Value>>, ys: Vec<Value>) -> Value {
+        let mut l: Vec<Value> = vec![];
+
+        for (i, x) in xs.iter().enumerate() {
+            let out = self.call(x);
+            let li = (out[0].clone() - ys[i].clone()).powf(2.0);
+            l.push(li);
+        }
+
+        l.iter().fold(Value::new(0.0), |a, b| a.clone() + b.clone())
+    }
+
+    pub fn learn(self) -> Value {
+        unimplemented!()
+    }
 }
 
 #[cfg(test)]
