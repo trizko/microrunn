@@ -17,7 +17,7 @@ struct Neuron {
 impl Neuron {
     fn new(nin: usize, non_lin: bool) -> Neuron {
         let mut rng = thread_rng();
-        let generator = Uniform::from(0.01..1.00);
+        let generator = Uniform::from(0.01..=1.00);
 
         Neuron {
             weights: vec![Value::new(generator.sample(&mut rng)); nin],
