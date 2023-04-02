@@ -9,7 +9,7 @@ use std::rc::Rc;
 pub struct Value {
     pub data: f64,
     pub grad: f64,
-    _prev: Vec<Rc<RefCell<Value>>>,
+    pub _prev: Vec<Rc<RefCell<Value>>>,
     _op: Op,
 }
 

@@ -18,4 +18,5 @@ fn main() {
     let mut loss: Value = model.loss(inputs, targets);
     loss = loss.backward();
     println!("{:?}", loss);
+    println!("{:#?}", model.parameters());
 }

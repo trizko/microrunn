@@ -27,6 +27,7 @@ impl Neuron {
             non_lin,
         }
     }
+
     fn call(&self, x: &Vec<Value>) -> Value {
         let act: Value = self
             .weights
@@ -40,6 +41,13 @@ impl Neuron {
         }
 
         act
+    }
+
+    fn _parameters(&self) -> Vec<Value> {
+        let mut result = self.weights.clone();
+        result.push(self.bias.clone());
+
+        result
     }
 }
 
@@ -56,6 +64,17 @@ impl Layer {
 
     fn call(&self, x: &Vec<Value>) -> Vec<Value> {
         self.neurons.iter().map(move |n| n.call(x)).collect()
+    }
+
+    fn _parameters(&self) -> Vec<Value> {
+        let mut result = vec![];
+
+        for n in self.neurons.iter() {
+            let mut params = n._parameters().clone();
+            result.append(&mut params);
+        }
+
+        result
     }
 }
 
@@ -97,6 +116,17 @@ impl MLP {
         }
 
         l.iter().fold(Value::new(0.0), |a, b| a.clone() + b.clone())
+    }
+
+    pub fn parameters(&self) -> Vec<Value> {
+        let mut result = vec![];
+
+        for l in self.layers.iter() {
+            let mut params = l._parameters().clone();
+            result.append(&mut params);
+        }
+
+        result
     }
 
     pub fn learn(self) -> Value {
