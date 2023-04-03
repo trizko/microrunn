@@ -17,6 +17,5 @@ fn main() {
     let model: MLP = MLP::new(2, vec![3, 3, 1]);
     let mut loss: Value = model.loss(inputs, targets);
     loss = loss.backward();
-    println!("{:?}", loss);
-    println!("{:#?}", model.parameters());
+    println!("{:#?}", loss.parameters());
 }

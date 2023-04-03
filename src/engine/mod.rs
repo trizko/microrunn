@@ -166,6 +166,21 @@ impl Value {
             _op: self._op,
         }
     }
+
+    pub fn parameters(&self) -> Vec<Value> {
+        let mut result: Vec<Value> = vec![];
+
+        fn go(param: Value, acc: &mut Vec<Value>) {
+            acc.push(param.clone());
+            for child in param._prev.into_iter() {
+                go(child.borrow().clone(), acc);
+            }
+        }
+
+        go(self.clone(), &mut result);
+
+        result
+    }
 }
 
 impl Add for Value {

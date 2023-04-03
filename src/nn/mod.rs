@@ -129,7 +129,7 @@ impl MLP {
         result
     }
 
-    pub fn learn(self) -> Value {
+    pub fn learn(self) -> MLP {
         unimplemented!()
     }
 }
