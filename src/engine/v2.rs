@@ -109,6 +109,12 @@ impl Debug for Value {
     }
 }
 
+impl PartialEq for Value {
+    fn eq(&self, other: &Self) -> bool {
+        (*self.data.borrow(), *self.grad.borrow()) == (*other.data.borrow(), *other.grad.borrow())
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -118,28 +124,28 @@ mod tests {
         let a = Value::new(2.0);
         let b = Value::new(-3.0);
         let result = a + b;
-        assert_eq!(result.data, -1.0);
+        assert_eq!(result, Value::new(-1.0));
     }
     #[test]
     fn multiply_two_values() {
         let a = Value::new(2.0);
         let b = Value::new(-3.0);
         let result = a * b;
-        assert_eq!(result.data, -6.0);
+        assert_eq!(result, Value::new(-6.0));
     }
     #[test]
     fn multiply_two_reference_values() {
         let a = Value::new(2.0);
         let b = Value::new(-3.0);
         let result = a * b;
-        assert_eq!(result.data, -6.0);
+        assert_eq!(result, Value::new(-6.0));
     }
     #[test]
     fn tanh_one_value() {
         let a = Value::new(2.0);
         let result = a.tanh();
         let offset = 0.000009;
-        assert!((0.96402 + offset) > result.data && result.data > (0.96402 - offset))
+        assert!((0.96402 + offset) > *result.data.borrow() && *result.data.borrow() > (0.96402 - offset))
     }
     // #[test]
     // fn feed_forward() {
