@@ -1,5 +1,6 @@
 use std::cell::RefCell;
 use std::fmt::Debug;
+use std::ops::Add;
 use std::rc::Rc;
 
 pub struct Value {
@@ -49,6 +50,26 @@ impl Value {
         let left = Rc::new(RefCell::new(self));
         let _prev: Vec<Rc<RefCell<Value>>> = vec![left];
         let _op: Op = Op::Powf(n);
+
+        Value {
+            data,
+            grad,
+            _prev,
+            _op,
+        }
+    }
+}
+
+impl Add for Value {
+    type Output = Value;
+
+    fn add(self, other: Self) -> Self::Output {
+        let data: RefCell<f64> = RefCell::new(*self.data.borrow() + *other.data.borrow());
+        let grad: RefCell<f64> = RefCell::new(0.0);
+        let left = Rc::new(RefCell::new(self));
+        let right = Rc::new(RefCell::new(other));
+        let _prev: Vec<Rc<RefCell<Value>>> = vec![left, right];
+        let _op: Op = Op::Add;
 
         Value {
             data,
