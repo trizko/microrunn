@@ -1,6 +1,6 @@
 use std::cell::RefCell;
 use std::fmt::Debug;
-use std::ops::{Add, Mul};
+use std::ops::{Add, Mul, Neg, Sub};
 use std::rc::Rc;
 
 pub struct Value {
@@ -80,6 +80,14 @@ impl Add for Value {
     }
 }
 
+impl Sub for Value {
+    type Output = Value;
+
+    fn sub(self, other: Self) -> Self::Output {
+        self + -other
+    }
+}
+
 impl Mul for Value {
     type Output = Value;
 
@@ -97,6 +105,14 @@ impl Mul for Value {
             _prev,
             _op,
         }
+    }
+}
+
+impl Neg for Value {
+    type Output = Self;
+
+    fn neg(self) -> Self::Output {
+        self * Value::new(-1.0)
     }
 }
 
