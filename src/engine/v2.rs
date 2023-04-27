@@ -108,3 +108,51 @@ impl Debug for Value {
             .finish()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn add_two_values() {
+        let a = Value::new(2.0);
+        let b = Value::new(-3.0);
+        let result = a + b;
+        assert_eq!(result.data, -1.0);
+    }
+    #[test]
+    fn multiply_two_values() {
+        let a = Value::new(2.0);
+        let b = Value::new(-3.0);
+        let result = a * b;
+        assert_eq!(result.data, -6.0);
+    }
+    #[test]
+    fn multiply_two_reference_values() {
+        let a = Value::new(2.0);
+        let b = Value::new(-3.0);
+        let result = a * b;
+        assert_eq!(result.data, -6.0);
+    }
+    #[test]
+    fn tanh_one_value() {
+        let a = Value::new(2.0);
+        let result = a.tanh();
+        let offset = 0.000009;
+        assert!((0.96402 + offset) > result.data && result.data > (0.96402 - offset))
+    }
+    // #[test]
+    // fn feed_forward() {
+    //     let a = Value::new(2.0);
+    //     let b = Value::new(-3.0);
+    //     let c = Value::new(10.0);
+    //     let d = a * b;
+    //     let e = d + c;
+    //     let mut f = e.tanh();
+
+    //     f.grad = 1.0;
+    //     let f_back = f.backward();
+
+    //     assert_ne!(0.0, f_back.grad);
+    // }
+}
