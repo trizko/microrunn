@@ -99,3 +99,12 @@ impl Mul for Value {
         }
     }
 }
+
+impl Debug for Value {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Value")
+            .field("data", &self.data)
+            .field("grad", &self.grad)
+            .finish()
+    }
+}
