@@ -1,5 +1,5 @@
-use microrunn::engine::v1::Value;
-use microrunn::nn::v1::MLP;
+use microrunn::engine::v0::Value;
+use microrunn::nn::v0::MLP;
 
 fn main() {
     let inputs = vec![
