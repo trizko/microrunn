@@ -58,6 +58,32 @@ impl Value {
             _op,
         }
     }
+
+    fn _backward(self) {
+        match self._op {
+            Op::Add => {
+                *self._prev[0].borrow().grad.borrow_mut() = *self.grad.borrow();
+                *self._prev[1].borrow().grad.borrow_mut() = *self.grad.borrow();
+            }
+            Op::Mul => {
+                *self._prev[0].borrow().grad.borrow_mut() =
+                    *self._prev[1].borrow().data.borrow() * *self.grad.borrow();
+                *self._prev[1].borrow().grad.borrow_mut() =
+                    *self._prev[0].borrow().data.borrow() * *self.grad.borrow();
+            }
+            Op::Powf(n) => {
+                *self._prev[0].borrow().grad.borrow_mut() = (n
+                    * (self._prev[0].borrow().data.borrow_mut().powf(n - 1.0)))
+                    * *self.grad.borrow();
+            }
+            Op::Tanh => {
+                *self._prev[0].borrow().grad.borrow_mut() = (1.0
+                    * (self._prev[0].borrow().data.borrow_mut().powf(2.0)))
+                    * *self.grad.borrow();
+            }
+            Op::None => {}
+        }
+    }
 }
 
 impl Add for Value {
