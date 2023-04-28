@@ -28,7 +28,7 @@ impl Neuron {
         }
     }
 
-    fn call(&self, x: &Vec<Value>) -> Value {
+    fn call(&self, x: &[Value]) -> Value {
         let act: Value = self
             .weights
             .iter()
@@ -62,7 +62,7 @@ impl Layer {
         }
     }
 
-    fn call(&self, x: &Vec<Value>) -> Vec<Value> {
+    fn call(&self, x: &[Value]) -> Vec<Value> {
         self.neurons.iter().map(move |n| n.call(x)).collect()
     }
 
@@ -97,8 +97,8 @@ impl MLP {
         MLP { layers }
     }
 
-    pub fn call(&self, x: &Vec<Value>) -> Vec<Value> {
-        let mut out: Vec<Value> = x.clone();
+    pub fn call(&self, x: &[Value]) -> Vec<Value> {
+        let mut out: Vec<Value> = x.to_owned();
         for layer in self.layers.iter() {
             out = layer.call(&out);
         }
@@ -115,7 +115,7 @@ impl MLP {
             l.push(li);
         }
 
-        l.iter().fold(Value::new(0.0), |a, b| a.clone() + b.clone())
+        l.iter().fold(Value::new(0.0), |a, b| a + b.clone())
     }
 
     pub fn parameters(&self) -> Vec<Value> {

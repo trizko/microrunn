@@ -35,7 +35,7 @@ impl Value {
     pub fn tanh(self) -> Value {
         let data: f64 = self.data.tanh();
         let grad: f64 = 0.0;
-        let left = Rc::new(RefCell::new(self.clone()));
+        let left = Rc::new(RefCell::new(self));
         let _prev: Vec<Rc<RefCell<Value>>> = vec![left];
         let _op: Op = Op::Tanh;
 
@@ -50,7 +50,7 @@ impl Value {
     pub fn powf(self, n: f64) -> Value {
         let data: f64 = self.data.powf(n);
         let grad: f64 = 0.0;
-        let left = Rc::new(RefCell::new(self.clone()));
+        let left = Rc::new(RefCell::new(self));
         let _prev: Vec<Rc<RefCell<Value>>> = vec![left];
         let _op: Op = Op::Powf(n);
 
@@ -63,7 +63,7 @@ impl Value {
     }
 
     pub fn backward(self) -> Value {
-        let mut out = self.clone();
+        let mut out = self;
         out.grad = 1.0;
 
         fn build_grads(root: &Value) -> Value {
@@ -189,8 +189,8 @@ impl Add for Value {
     fn add(self, other: Self) -> Self::Output {
         let data: f64 = self.data + other.data;
         let grad: f64 = 0.0;
-        let left = Rc::new(RefCell::new(self.clone()));
-        let right = Rc::new(RefCell::new(other.clone()));
+        let left = Rc::new(RefCell::new(self));
+        let right = Rc::new(RefCell::new(other));
         let _prev: Vec<Rc<RefCell<Value>>> = vec![left, right];
         let _op: Op = Op::Add;
 
@@ -229,8 +229,8 @@ impl Mul for Value {
     fn mul(self, other: Self) -> Self::Output {
         let data: f64 = self.data * other.data;
         let grad: f64 = 0.0;
-        let left = Rc::new(RefCell::new(self.clone()));
-        let right = Rc::new(RefCell::new(other.clone()));
+        let left = Rc::new(RefCell::new(self));
+        let right = Rc::new(RefCell::new(other));
         let _prev: Vec<Rc<RefCell<Value>>> = vec![left, right];
         let _op: Op = Op::Mul;
 
@@ -285,7 +285,7 @@ impl Clone for Value {
             data: self.data,
             grad: self.grad,
             _prev: self._prev.clone(),
-            _op: self._op.clone(),
+            _op: self._op,
         }
     }
 }
