@@ -161,7 +161,10 @@ mod tests {
         let a = Value::new(2.0);
         let result = a.tanh();
         let offset = 0.000009;
-        assert!((0.96402 + offset) > *result.data.borrow() && *result.data.borrow() > (0.96402 - offset))
+        assert!(
+            (0.96402 + offset) > *result.data.borrow()
+                && *result.data.borrow() > (0.96402 - offset)
+        )
     }
     // #[test]
     // fn feed_forward() {
