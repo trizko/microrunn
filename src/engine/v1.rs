@@ -65,7 +65,7 @@ impl Value {
         fn recurse(root: &Value) {
             root._backward();
             for v in root._prev.iter() {
-                recurse(&*v.borrow());
+                recurse(&v.borrow());
             }
         }
 
