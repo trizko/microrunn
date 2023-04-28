@@ -59,7 +59,20 @@ impl Value {
         }
     }
 
-    fn _backward(self) {
+    pub fn backward(&self) {
+        *self.grad.borrow_mut() = 1.0;
+
+        fn recurse(root: &Value) {
+            root._backward();
+            for v in root._prev.iter() {
+                recurse(&*v.borrow());
+            }
+        }
+
+        recurse(self);
+    }
+
+    fn _backward(&self) {
         match self._op {
             Op::Add => {
                 *self._prev[0].borrow().grad.borrow_mut() = *self.grad.borrow();
@@ -147,6 +160,7 @@ impl Debug for Value {
         f.debug_struct("Value")
             .field("data", &self.data)
             .field("grad", &self.grad)
+            .field("_prev", &self._prev)
             .finish()
     }
 }
@@ -192,18 +206,19 @@ mod tests {
                 && *result.data.borrow() > (0.96402 - offset)
         )
     }
-    // #[test]
-    // fn feed_forward() {
-    //     let a = Value::new(2.0);
-    //     let b = Value::new(-3.0);
-    //     let c = Value::new(10.0);
-    //     let d = a * b;
-    //     let e = d + c;
-    //     let mut f = e.tanh();
+    #[test]
+    fn feed_forward() {
+        let a = Value::new(2.0);
+        let b = Value::new(-3.0);
+        let c = Value::new(10.0);
+        let d = a * b;
+        let e = d + c;
+        let f = e.tanh();
 
-    //     f.grad = 1.0;
-    //     let f_back = f.backward();
+        f.backward();
 
-    //     assert_ne!(0.0, f_back.grad);
-    // }
+        println!("{:#?}", f);
+
+        assert_ne!(0.0, *f.grad.borrow());
+    }
 }
