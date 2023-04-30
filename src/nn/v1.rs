@@ -26,7 +26,11 @@ impl Neuron {
         Neuron {
             weights: {
                 let mut v = Vec::with_capacity(nin);
-                (0..nin).for_each(|_| v.push(Rc::new(RefCell::new(Value::new(generator.sample(&mut rng))))));
+                (0..nin).for_each(|_| {
+                    v.push(Rc::new(RefCell::new(Value::new(
+                        generator.sample(&mut rng),
+                    ))))
+                });
                 v
             },
             bias: Rc::new(RefCell::new(Value::new(generator.sample(&mut rng)))),
@@ -39,10 +43,8 @@ impl Neuron {
     }
 
     fn _parameters(self) -> Vec<Rc<RefCell<Value>>> {
-        let mut result: Vec<Rc<RefCell<Value>>> = self.weights
-            .into_iter()
-            .map(|v| Rc::clone(&v))
-            .collect();
+        let mut result: Vec<Rc<RefCell<Value>>> =
+            self.weights.into_iter().map(|v| Rc::clone(&v)).collect();
         result.push(Rc::clone(&self.bias));
 
         result
