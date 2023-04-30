@@ -24,7 +24,11 @@ impl Neuron {
         let generator = Uniform::from(0.01..=1.00);
 
         Neuron {
-            weights: vec![Rc::new(RefCell::new(Value::new(generator.sample(&mut rng)))); nin],
+            weights: {
+                let mut v = Vec::with_capacity(nin);
+                (0..nin).for_each(|_| v.push(Rc::new(RefCell::new(Value::new(generator.sample(&mut rng))))));
+                v
+            },
             bias: Rc::new(RefCell::new(Value::new(generator.sample(&mut rng)))),
             non_lin,
         }
