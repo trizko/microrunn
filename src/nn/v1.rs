@@ -34,7 +34,13 @@ impl Neuron {
         unimplemented!()
     }
 
-    fn _parameters(&self) -> Vec<Value> {
-        unimplemented!()
+    fn _parameters(self) -> Vec<Rc<RefCell<Value>>> {
+        let mut result: Vec<Rc<RefCell<Value>>> = self.weights
+            .into_iter()
+            .map(|v| Rc::clone(&v))
+            .collect();
+        result.push(Rc::clone(&self.bias));
+
+        result
     }
 }
