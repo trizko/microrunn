@@ -4,8 +4,8 @@ use std::ops::{Add, Mul, Neg, Sub};
 use std::rc::Rc;
 
 pub struct Value {
-    pub data: RefCell<f64>,
-    pub grad: RefCell<f64>,
+    pub data: Rc<RefCell<f64>>,
+    pub grad: Rc<RefCell<f64>>,
     pub _prev: Vec<Rc<RefCell<Value>>>,
     _op: Op,
 }
@@ -22,16 +22,16 @@ enum Op {
 impl Value {
     pub fn new(data: f64) -> Value {
         Value {
-            data: RefCell::new(data),
-            grad: RefCell::new(0.0),
+            data: Rc::new(RefCell::new(data)),
+            grad: Rc::new(RefCell::new(0.0)),
             _prev: vec![],
             _op: Op::None,
         }
     }
 
     pub fn tanh(self) -> Value {
-        let data: RefCell<f64> = RefCell::new(self.data.borrow().tanh());
-        let grad: RefCell<f64> = RefCell::new(0.0);
+        let data: Rc<RefCell<f64>> = Rc::new(RefCell::new(self.data.borrow().tanh()));
+        let grad: Rc<RefCell<f64>> = Rc::new(RefCell::new(0.0));
         let left: Rc<RefCell<Value>> = Rc::new(RefCell::new(self));
         let _prev: Vec<Rc<RefCell<Value>>> = vec![left];
         let _op: Op = Op::Tanh;
@@ -45,8 +45,8 @@ impl Value {
     }
 
     pub fn powf(self, n: f64) -> Value {
-        let data: RefCell<f64> = RefCell::new(self.data.borrow().powf(n));
-        let grad: RefCell<f64> = RefCell::new(0.0);
+        let data: Rc<RefCell<f64>> = Rc::new(RefCell::new(self.data.borrow().powf(n)));
+        let grad: Rc<RefCell<f64>> = Rc::new(RefCell::new(0.0));
         let left = Rc::new(RefCell::new(self));
         let _prev: Vec<Rc<RefCell<Value>>> = vec![left];
         let _op: Op = Op::Powf(n);
@@ -103,8 +103,8 @@ impl Add for Value {
     type Output = Value;
 
     fn add(self, other: Self) -> Self::Output {
-        let data: RefCell<f64> = RefCell::new(*self.data.borrow() + *other.data.borrow());
-        let grad: RefCell<f64> = RefCell::new(0.0);
+        let data: Rc<RefCell<f64>> = Rc::new(RefCell::new(*self.data.borrow() + *other.data.borrow()));
+        let grad: Rc<RefCell<f64>> = Rc::new(RefCell::new(0.0));
         let left = Rc::new(RefCell::new(self));
         let right = Rc::new(RefCell::new(other));
         let _prev: Vec<Rc<RefCell<Value>>> = vec![left, right];
@@ -131,8 +131,8 @@ impl Mul for Value {
     type Output = Value;
 
     fn mul(self, other: Self) -> Self::Output {
-        let data: RefCell<f64> = RefCell::new(*self.data.borrow() * *other.data.borrow());
-        let grad: RefCell<f64> = RefCell::new(0.0);
+        let data: Rc<RefCell<f64>> = Rc::new(RefCell::new(*self.data.borrow() * *other.data.borrow()));
+        let grad: Rc<RefCell<f64>> = Rc::new(RefCell::new(0.0));
         let left = Rc::new(RefCell::new(self));
         let right = Rc::new(RefCell::new(other));
         let _prev: Vec<Rc<RefCell<Value>>> = vec![left, right];
