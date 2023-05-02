@@ -94,6 +94,6 @@ mod tests {
         let out = n.call(x);
 
         assert_eq!(3, n.weights.len());
-        assert_eq!(0.0, *out.borrow().grad.borrow());
+        assert_eq!(0.0, *out.grad.borrow());
     }
 }
