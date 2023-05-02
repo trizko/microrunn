@@ -3,6 +3,7 @@ use std::fmt::Debug;
 use std::ops::{Add, Mul, Neg, Sub};
 use std::rc::Rc;
 
+#[derive(Clone)]
 pub struct Value {
     pub data: Rc<RefCell<f64>>,
     pub grad: Rc<RefCell<f64>>,
@@ -103,7 +104,8 @@ impl Add for Value {
     type Output = Value;
 
     fn add(self, other: Self) -> Self::Output {
-        let data: Rc<RefCell<f64>> = Rc::new(RefCell::new(*self.data.borrow() + *other.data.borrow()));
+        let data: Rc<RefCell<f64>> =
+            Rc::new(RefCell::new(*self.data.borrow() + *other.data.borrow()));
         let grad: Rc<RefCell<f64>> = Rc::new(RefCell::new(0.0));
         let left = Rc::new(RefCell::new(self));
         let right = Rc::new(RefCell::new(other));
@@ -131,7 +133,8 @@ impl Mul for Value {
     type Output = Value;
 
     fn mul(self, other: Self) -> Self::Output {
-        let data: Rc<RefCell<f64>> = Rc::new(RefCell::new(*self.data.borrow() * *other.data.borrow()));
+        let data: Rc<RefCell<f64>> =
+            Rc::new(RefCell::new(*self.data.borrow() * *other.data.borrow()));
         let grad: Rc<RefCell<f64>> = Rc::new(RefCell::new(0.0));
         let left = Rc::new(RefCell::new(self));
         let right = Rc::new(RefCell::new(other));
@@ -158,8 +161,8 @@ impl Neg for Value {
 impl Debug for Value {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("Value")
-            .field("data", &self.data)
-            .field("grad", &self.grad)
+            .field("data", &self.data.borrow())
+            .field("grad", &self.grad.borrow())
             .field("_prev", &self._prev)
             .finish()
     }
