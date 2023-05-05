@@ -45,9 +45,13 @@ impl Neuron {
             .weights
             .iter()
             .zip(x.iter())
-            .map(|(x, y)| (Rc::clone(&x), Rc::clone(&y)))
-            .map(move |(x, y)| (*x.borrow()).clone() * (*y.borrow()).clone())
-            .fold((*self.bias.borrow()).clone(), |a, b| a + b);
+            .map(move |(x, y)| -> Value {
+                let a: Value = (*x.borrow()).to_owned();
+                let b: Value = (*y.borrow()).to_owned();
+
+                a * b
+            })
+            .fold(self.bias.borrow().to_owned(), |a, b| a + b);
 
         if self.non_lin {
             return act.tanh();
@@ -92,6 +96,28 @@ mod tests {
 
         let n = Neuron::new(3, true);
         let out = n.call(x);
+
+        assert_eq!(3, n.weights.len());
+        assert_eq!(0.0, *out.grad.borrow());
+    }
+    #[test]
+    fn output_grad_not_zero_after_backward_from_neuron() {
+        let seed = 42; // Choose a seed value
+        let mut rng = StdRng::seed_from_u64(seed);
+        let generator = Uniform::from(0.01..=1.00);
+        let x: Vec<Rc<RefCell<Value>>> = {
+            let mut v = Vec::with_capacity(3);
+            (0..3).for_each(|_| {
+                v.push(Rc::new(RefCell::new(Value::new(
+                    generator.sample(&mut rng),
+                ))))
+            });
+            v
+        };
+
+        let n = Neuron::new(3, true);
+        let out = n.call(x);
+        out.backward();
 
         assert_eq!(3, n.weights.len());
         assert_eq!(0.0, *out.grad.borrow());
