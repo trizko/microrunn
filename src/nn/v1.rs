@@ -69,6 +69,32 @@ impl Neuron {
     }
 }
 
+struct Layer {
+    neurons: Vec<Rc<RefCell<Neuron>>>,
+}
+
+impl Layer {
+    fn new(nin: usize, nout: usize, non_lin: bool) -> Layer {
+        Layer {
+            neurons: {
+                let mut v = Vec::with_capacity(nin);
+                (0..nout).for_each(|_| {
+                    v.push(Rc::new(RefCell::new(Neuron::new(nin, non_lin))))
+                });
+                v
+            },
+        }
+    }
+
+    fn call(&self, x: &[Value]) -> Vec<Value> {
+        unimplemented!()
+    }
+
+    fn _parameters(&self) -> Vec<Value> {
+        unimplemented!()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
