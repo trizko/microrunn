@@ -78,19 +78,20 @@ impl Layer {
         Layer {
             neurons: {
                 let mut v = Vec::with_capacity(nin);
-                (0..nout).for_each(|_| {
-                    v.push(Rc::new(RefCell::new(Neuron::new(nin, non_lin))))
-                });
+                (0..nout).for_each(|_| v.push(Rc::new(RefCell::new(Neuron::new(nin, non_lin)))));
                 v
             },
         }
     }
 
-    fn call(&self, x: &[Value]) -> Vec<Value> {
-        unimplemented!()
+    fn call(&self, xs: Vec<Rc<RefCell<Value>>>) -> Vec<Value> {
+        self.neurons
+            .iter()
+            .map(|n| n.borrow().call(xs.clone()))
+            .collect()
     }
 
-    fn _parameters(&self) -> Vec<Value> {
+    fn _parameters(&self) -> Vec<Rc<RefCell<Value>>> {
         unimplemented!()
     }
 }
