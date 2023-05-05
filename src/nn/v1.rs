@@ -40,12 +40,12 @@ impl Neuron {
         }
     }
 
-    fn call(&self, x: Vec<Rc<RefCell<Value>>>) -> Value {
+    fn call(&self, xs: Vec<Rc<RefCell<Value>>>) -> Value {
         let act = self
             .weights
             .iter()
-            .zip(x.iter())
-            .map(move |(x, y)| -> Value {
+            .zip(xs.iter())
+            .map(|(x, y)| -> Value {
                 let a: Value = (*x.borrow()).to_owned();
                 let b: Value = (*y.borrow()).to_owned();
 
